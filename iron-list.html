@@ -238,12 +238,6 @@ will only render 20.
         display: block;
       }
 
-      @media only screen and (-webkit-max-device-pixel-ratio: 1) {
-        :host {
-          will-change: transform;
-        }
-      }
-
       #items {
         @apply --iron-list-items-container;
         position: relative;
@@ -257,8 +251,7 @@ will only render 20.
         box-sizing: border-box;
         margin: 0;
         position: absolute;
-        top: 0;
-        will-change: transform;
+        top: 0;       
       }
     </style>
 
@@ -1300,14 +1293,17 @@ will only render 20.
           if (this._isRTL) {
             x = x * -1;
           }
-          this.translate3d(x + 'px', y + 'px', 0, this._physicalItems[pidx]);
+         // this.translate3d(x + 'px', y + 'px', 0, this._physicalItems[pidx]);
+          this._physicalItems[pidx].style.left = x+'px';
+          this._physicalItems[pidx].style.top = y+'px';
           if (this._shouldRenderNextRow(vidx)) {
             y += this._rowHeight;
           }
         });
       } else {
         this._iterateItems(function(pidx, vidx) {
-          this.translate3d(0, y + 'px', 0, this._physicalItems[pidx]);
+         // this.translate3d(0, y + 'px', 0, this._physicalItems[pidx]);
+         this._physicalItems[pidx].style.top = y+'px';
           y += this._physicalSizes[pidx];
         });
       }
@@ -1764,7 +1760,8 @@ will only render 20.
       this._physicalItems[fpidx] = this._focusBackfillItem;
       this._focusedPhysicalIndex = fpidx;
       // Hide the focused physical.
-      this.translate3d(0, HIDDEN_Y, 0, this._offscreenFocusedItem);
+     // this.translate3d(0, HIDDEN_Y, 0, this._offscreenFocusedItem);
+      this._offscreenFocusedItem.style.top = HIDDEN_Y;
     },
 
     _restoreFocusedItem: function() {
@@ -1792,7 +1789,8 @@ will only render 20.
         // Restore the focused physical item.
         this._physicalItems[fpidx] = this._offscreenFocusedItem;
         // Hide the physical item that backfills.
-        this.translate3d(0, HIDDEN_Y, 0, this._focusBackfillItem);
+      //  this.translate3d(0, HIDDEN_Y, 0, this._focusBackfillItem);
+        this._focusBackfillItem.style.top = HIDDEN_Y;
       } else {
         this._removeFocusedItem();
         this._focusBackfillItem = null;
