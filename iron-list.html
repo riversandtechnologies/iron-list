@@ -34,7 +34,7 @@ explicitly sized parent. By "explicitly sized", we mean it either has an explici
 CSS `height` property set via a class or inline style, or else is sized by other
 layout means (e.g. the `flex` or `fit` classes).
 
-#### Flexbox - [jsbin](http://jsbin.com/kokaki/edit?html,output)
+#### Flexbox - [jsbin](https://jsbin.com/vejoni/edit?html,output)
 
 ```html
 <template is="x-list">
@@ -60,7 +60,7 @@ layout means (e.g. the `flex` or `fit` classes).
   </iron-list>
 </template>
 ```
-#### Explicit size - [jsbin](http://jsbin.com/pibefo/edit?html,output)
+#### Explicit size - [jsbin](https://jsbin.com/vopucus/edit?html,output)
 ```html
 <template is="x-list">
   <style>
@@ -81,7 +81,7 @@ layout means (e.g. the `flex` or `fit` classes).
   </iron-list>
 </template>
 ```
-#### Main document scrolling - [jsbin](http://jsbin.com/cojuli/edit?html,output)
+#### Main document scrolling - [jsbin](https://jsbin.com/wevirow/edit?html,output)
 ```html
 <head>
   <style>
@@ -285,7 +285,7 @@ will only render 20.
 
   /* Polymer.OptionalMutableDataBehavior is only available with Polymer 2.0. */
   if (!Polymer.OptionalMutableDataBehavior) {
-    /* @polymerBehavior */
+    /** @polymerBehavior */
     Polymer.OptionalMutableDataBehavior = {};
   }
 
@@ -419,7 +419,7 @@ will only render 20.
 
     /**
      * The ratio of hidden tiles that should remain in the scroll direction.
-     * Recommended value ~0.5, so it will distribute tiles evely in both directions.
+     * Recommended value ~0.5, so it will distribute tiles evenly in both directions.
      */
     _ratio: 0.5,
 
@@ -969,7 +969,10 @@ will only render 20.
         var ts = window.performance.now();
         // Concat arrays in place.
         [].push.apply(this._physicalItems, this._createPool(delta));
-        [].push.apply(this._physicalSizes, new Array(delta));
+        // Push 0s into physicalSizes. Can't use Array.fill because IE11 doesn't support it.
+        for (var i = 0; i < delta; i++) {
+          this._physicalSizes.push(0);
+        }
         this._physicalCount = this._physicalCount + delta;
         // Update the physical start if it needs to preserve the model of the focused item.
         // In this situation, the focused item is currently rendered and its model would
@@ -1056,7 +1059,7 @@ will only render 20.
     },
 
     /**
-     * Called when the items have changed. That is, ressignments
+     * Called when the items have changed. That is, reassignments
      * to `items`, splices or updates to a single item.
      */
     _itemsChanged: function(change) {
@@ -1081,9 +1084,21 @@ will only render 20.
       } else if (change.path === 'items.splices') {
         this._adjustVirtualIndex(change.value.indexSplices);
         this._virtualCount = this.items ? this.items.length : 0;
+        // Only blur if at least one item is added or removed.
+        var itemAddedOrRemoved = change.value.indexSplices.some(function(splice) {
+          return splice.addedCount > 0 || splice.removed.length > 0;
+        });
+        if (itemAddedOrRemoved) {
+          // Only blur activeElement if it is a descendant of the list (#505, #507).
+          var activeElement = this._getActiveElement();
+          if (this.contains(activeElement)) {
+            activeElement.blur();
+          }
+        }
         // Render only if the affected index is rendered.
         var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
-          return this._isIndexRendered(splice.index);
+          return splice.index + splice.addedCount >= this._virtualStart &&
+              splice.index <= this._virtualEnd;
         }, this);
         if (!this._isClientFull() || affectedIndexRendered) {
           this._debounce('_render', this._render, ANIMATION_FRAME);
@@ -1095,29 +1110,42 @@ will only render 20.
 
     _forwardItemPath: function(path, value) {
       path = path.slice(6); // 'items.'.length == 6
-      var dot = path.indexOf('.') + 1;
-      if (dot === 0) {
+      var dot = path.indexOf('.');
+      if (dot === -1) {
         dot = path.length;
       }
-      var idx = IS_V2
-          ? parseInt(path.substring(0, dot), 10)
-          // Extract `#` from `path`.
-          : parseInt(path.substring(1, dot), 10);
-      var offscreenItem = this._offscreenFocusedItem;
-      var isIndexRendered = this._isIndexRendered(idx);
-      var inst;
+      var isIndexRendered;
       var pidx;
+      var inst;
+      var offscreenInstance = this.modelForElement(this._offscreenFocusedItem);
+      if (IS_V2) {
+        var vidx = parseInt(path.substring(0, dot), 10);
+        isIndexRendered = this._isIndexRendered(vidx);
+        if (isIndexRendered) {
+          pidx = this._getPhysicalIndex(vidx);
+          inst = this.modelForElement(this._physicalItems[pidx]);
+        } else if (offscreenInstance) {
+          inst = offscreenInstance;
+        }
 
-      if (isIndexRendered) {
-        pidx = this._getPhysicalIndex(idx);
-        inst = this.modelForElement(this._physicalItems[pidx]);
-      } else if (offscreenItem) {
-        inst = this.modelForElement(offscreenItem);
+        if (!inst || inst[this.indexAs] !== vidx) {
+          return;
+        }
+      } else {
+        // Polymer 1.x - get physical instance by key (`#1`), not index.
+        var key = path.substring(0, dot);
+        if (offscreenInstance && offscreenInstance.__key__ === key) {
+          inst = offscreenInstance;
+        } else {
+          pidx = this._physicalIndexForKey[key];
+          inst = this.modelForElement(this._physicalItems[pidx]);
+
+          if (!inst || inst.__key__ !== key) {
+            return;
+          }
+        }
       }
-      if (!inst || inst[this.indexAs] !== idx) {
-        return;
-      }
-      path = path.substring(dot);
+      path = path.substring(dot + 1);
       path = this.as + (path ? '.' + path : '');
       IS_V2
         ? inst._setPendingPropertyOrPath(path, value, false, true)
@@ -1156,7 +1184,6 @@ will only render 20.
       // remove the current focused item
       if (this._focusedItem && this.modelForElement(this._focusedItem)[this.as] === item) {
         this._removeFocusedItem();
-        document.activeElement && document.activeElement.blur && document.activeElement.blur();
       }
     },
 
@@ -1247,7 +1274,7 @@ will only render 20.
       var prevPhysicalAvg = this._physicalAverage;
 
       this._iterateItems(function(pidx, vidx) {
-        oldPhysicalSize += this._physicalSizes[pidx] || 0;
+        oldPhysicalSize += this._physicalSizes[pidx];
         this._physicalSizes[pidx] = this._physicalItems[pidx].offsetHeight;
         newPhysicalSize += this._physicalSizes[pidx];
         this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
@@ -1558,7 +1585,7 @@ will only render 20.
      * depending on whether the item has already been selected.
      *
      * @method toggleSelectionForIndex
-     * @param {Object} index The index of the item in the items array.
+     * @param {number} index The index of the item in the items array.
      */
     toggleSelectionForIndex: function(index) {
       var isSelected = this.$.selector.isIndexSelected
@@ -1597,8 +1624,7 @@ will only render 20.
       }
       var modelTabIndex, activeElTabIndex;
       var target = Polymer.dom(e).path[0];
-      var itemsHost = this._itemsParent.node.domHost;
-      var activeEl = Polymer.dom(itemsHost ? itemsHost.root : document).activeElement;
+      var activeEl = this._getActiveElement();
       var physicalItem = this._physicalItems[this._getPhysicalIndex(model[this.indexAs])];
       // Safari does not focus certain form controls via mouse
       // https://bugs.webkit.org/show_bug.cgi?id=118043
@@ -1694,8 +1720,10 @@ will only render 20.
       return idx >= this.firstVisibleIndex && idx <= this.lastVisibleIndex;
     },
 
-    _getPhysicalIndex: function(idx) {
-      return (this._physicalStart + (idx - this._virtualStart)) % this._physicalCount;
+    _getPhysicalIndex: function(vidx) {
+      return IS_V2
+        ? (this._physicalStart + (vidx - this._virtualStart)) % this._physicalCount
+        : this._physicalIndexForKey[this._collection.getKey(this.items[vidx])];
     },
 
     focusItem: function(idx) {
@@ -1771,7 +1799,7 @@ will only render 20.
       // Assign models to the focused index.
       this._assignModels();
       // Get the new physical index for the focused index.
-      var fpidx = this._focusedPhysicalIndex;
+      var fpidx = this._focusedPhysicalIndex = this._getPhysicalIndex(this._focusedVirtualIndex);
 
       var onScreenItem = this._physicalItems[fpidx];
       if (!onScreenItem) {
@@ -1846,7 +1874,7 @@ will only render 20.
           break;
         case /* ENTER */ 13:
           this._focusPhysicalItem(this._focusedVirtualIndex);
-          this._selectionHandler(e);
+          if (this.selectionEnabled) this._selectionHandler(e);
           break;
       }
     },
@@ -1927,6 +1955,12 @@ will only render 20.
             this.modelForElement(item)[prop] = value;
           }
         }, this);
+    },
+
+    /* Gets the activeElement of the shadow root/host that contains the list. */
+    _getActiveElement: function() {
+      var itemsHost = this._itemsParent.node.domHost;
+      return Polymer.dom(itemsHost ? itemsHost.root : document).activeElement;
     }
 
   });
