@@ -817,6 +817,15 @@ will only render 20.
         var idxAdjustment = Math.round(delta / this._physicalAverage) * this._itemsPerRow;
         this._virtualStart = this._virtualStart + idxAdjustment;
         this._physicalStart = this._physicalStart + idxAdjustment;
+        
+        // Fix for Edge.
+        // In Edge when user scroll all the way down in iron-list and from there directly come to top record of list.
+        // Then list is not working properly calculation of list instances are going for toss.
+        // Note: Scroll event is getting fired and served in chrome faster then Edge.
+        if(this._scrollTop == 0) {
+          this._physicalStart = 0;
+        }
+
         // Estimate new physical offset.
         this._physicalTop = Math.floor(this._virtualStart / this._itemsPerRow) * this._physicalAverage;
         this._update();
