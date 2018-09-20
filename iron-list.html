@@ -759,7 +759,7 @@ will only render 20.
     },
 
     attached: function() {
-      this._debounce('_render', this._render, ANIMATION_FRAME);
+      //this._debounce('_render', this._render, ANIMATION_FRAME);
       // `iron-resize` is fired when the list is attached if the event is added
       // before attached causing unnecessary work.
       this.listen(this, 'iron-resize', '_resizeHandler');
@@ -803,7 +803,8 @@ will only render 20.
      * Recycles the physical items when needed.
      */
     _scrollHandler: function() {
-      var scrollTop = Math.max(0, Math.min(this._maxScrollTop, this._scrollTop));
+      var currentScrollTop = this._scrollTop;
+      var scrollTop = Math.max(0, Math.min(this._maxScrollTop, currentScrollTop));
       var delta = scrollTop - this._scrollPosition;
       var isScrollingDown = delta >= 0;
       // Track the current scroll position.
@@ -822,7 +823,7 @@ will only render 20.
         // In Edge when user scroll all the way down in iron-list and from there directly come to top record of list.
         // Then list is not working properly calculation of list instances are going for toss.
         // Note: Scroll event is getting fired and served in chrome faster then Edge.
-        if(this._scrollTop == 0) {
+        if(currentScrollTop == 0) {
           this._physicalStart = 0;
         }
 
@@ -912,7 +913,7 @@ will only render 20.
      * @param {!Array<number>=} movingUp
      */
     _update: function(itemSet, movingUp) {
-      if ((itemSet && itemSet.length === 0) || this._physicalCount === 0) {
+      if ((itemSet && itemSet.length === 0)) {
         return;
       }
       this._manageFocus();
@@ -1082,9 +1083,11 @@ will only render 20.
         this._physicalItems = this._physicalItems || [];
         this._physicalSizes = this._physicalSizes || [];
         this._physicalStart = 0;
-        if (this._scrollTop > this._scrollOffset) {
-          this._resetScrollPosition(0);
-        }
+
+        // commented as part of Edge performance.
+        // if (this._scrollTop > this._scrollOffset) {
+        //   this._resetScrollPosition(0);
+        // }
         this._removeFocusedItem();
         this._debounce('_render', this._render, ANIMATION_FRAME);
       } else if (change.path === 'items.splices') {
@@ -1254,12 +1257,15 @@ will only render 20.
       var oldPhysicalSize = 0;
       var prevAvgCount = this._physicalAverageCount;
       var prevPhysicalAvg = this._physicalAverage;
+      
+      let offsetHeight = this._physicalItems[0].offsetHeight;
 
       this._iterateItems(function(pidx, vidx) {
         oldPhysicalSize += this._physicalSizes[pidx] || 0;
-        this._physicalSizes[pidx] = this._physicalItems[pidx].offsetHeight;
+        this._physicalSizes[pidx] = offsetHeight;
         newPhysicalSize += this._physicalSizes[pidx];
         this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
+        offsetHeight =+ offsetHeight;
       }, itemSet);
 
       if (this.grid) {
@@ -1363,7 +1369,7 @@ will only render 20.
     _resetScrollPosition: function(pos) {
       if (this.scrollTarget && pos >= 0) {
         this._scrollTop = pos;
-        this._scrollPosition = this._scrollTop;
+        this._scrollPosition = pos;
       }
     },
 
@@ -1463,9 +1469,11 @@ will only render 20.
         // clear cached visible index.
         this._firstVisibleIndexVal = null;
         this._lastVisibleIndexVal = null;
+
+        // Commented as a part of Edge performance.
         // Skip the resize event on touch devices when the address bar slides up.
-        var delta = Math.abs(this._viewportHeight - this._scrollTargetHeight);
-        this.updateViewportBoundaries();
+        //var delta = Math.abs(this._viewportHeight - this._scrollTargetHeight);
+        //this.updateViewportBoundaries();
         if (this._isVisible) {
           // Reinstall the scroll event listener.
           this.toggleScrollListener(true);
