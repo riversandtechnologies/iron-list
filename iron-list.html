@@ -1083,6 +1083,8 @@ will only render 20.
         this._physicalItems = this._physicalItems || [];
         this._physicalSizes = this._physicalSizes || [];
         this._physicalStart = 0;
+
+        // commented as part of Edge performance.
         // if (this._scrollTop > this._scrollOffset) {
         //   this._resetScrollPosition(0);
         // }
@@ -1260,7 +1262,7 @@ will only render 20.
 
       this._iterateItems(function(pidx, vidx) {
         oldPhysicalSize += this._physicalSizes[pidx] || 0;
-        this._physicalSizes[pidx] = offsetHeight; //this._physicalItems[pidx].offsetHeight;
+        this._physicalSizes[pidx] = offsetHeight;
         newPhysicalSize += this._physicalSizes[pidx];
         this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
         offsetHeight =+ offsetHeight;
@@ -1467,6 +1469,8 @@ will only render 20.
         // clear cached visible index.
         this._firstVisibleIndexVal = null;
         this._lastVisibleIndexVal = null;
+
+        // Commented as a part of Edge performance.
         // Skip the resize event on touch devices when the address bar slides up.
         //var delta = Math.abs(this._viewportHeight - this._scrollTargetHeight);
         //this.updateViewportBoundaries();
