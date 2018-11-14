@@ -1263,7 +1263,9 @@ will only render 20.
       this._iterateItems(function(pidx, vidx) {
         oldPhysicalSize += this._physicalSizes[pidx] || 0;
         this._physicalSizes[pidx] = offsetHeight;
-        newPhysicalSize += this._physicalSizes[pidx];
+        if(this.items[pidx]){
+          newPhysicalSize += this._physicalSizes[pidx];
+        }
         this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
         offsetHeight =+ offsetHeight;
       }, itemSet);
@@ -1273,7 +1275,7 @@ will only render 20.
         this._physicalSize = Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
       } else {
         oldPhysicalSize = (this._itemsPerRow === 1) ? oldPhysicalSize :  Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
-        this._physicalSize = this._physicalSize + newPhysicalSize - oldPhysicalSize;
+        this._physicalSize = newPhysicalSize; //this._physicalSize + newPhysicalSize - oldPhysicalSize;
         this._itemsPerRow = 1;
       }
       // Update the average if it measured something.
