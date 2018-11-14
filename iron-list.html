@@ -1275,6 +1275,11 @@ will only render 20.
         this._physicalSize = Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
       } else {
         oldPhysicalSize = (this._itemsPerRow === 1) ? oldPhysicalSize :  Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
+        /*
+          Issue : LOV showing empty spaces in bottom
+          Reason: After opening LOV for first time, with all items the _physicalSize will be more ex:2000px (for 100 records)
+                  Second time, when we open LOV, it is retaining 2000px but actual height should be 200px (for 10 records)
+        */
         this._physicalSize = newPhysicalSize; //this._physicalSize + newPhysicalSize - oldPhysicalSize;
         this._itemsPerRow = 1;
       }
