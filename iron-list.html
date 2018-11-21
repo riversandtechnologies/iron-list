@@ -950,6 +950,43 @@ will only render 20.
       return physicalItems;
     },
 
+    _deletePool: function () {
+        let children = this.children;
+        if (children) {
+          for (let child of children) {
+            if (child.tagName.toLowerCase() != "template") {
+              this.removeChild(child);
+            }
+          }
+
+          let template;
+
+          while (this.firstChild) {
+            if (this.firstChild.tagName && this.firstChild.tagName.toLowerCase() == "template") {
+              template =  this.firstChild;
+            }
+            this.removeChild(this.firstChild);
+          }
+          
+          if(template) {
+            this.appendChild(template);
+          }
+        }
+      },
+
+      reset: function () {
+        this._physicalStart = 0;
+        this._physicalCount = 0;
+        this._physicalItems = [];
+        this._physicalSizes = [];
+        this._physicalSize = 0;
+        this._physicalTop = 0;
+
+        this.items = [];
+
+        this._deletePool();
+      },
+
     _isClientFull: function() {
       return this._scrollBottom != 0 && this._physicalBottom-1 >= this._scrollBottom &&
           this._physicalTop <= this._scrollPosition;
@@ -1263,9 +1300,7 @@ will only render 20.
       this._iterateItems(function(pidx, vidx) {
         oldPhysicalSize += this._physicalSizes[pidx] || 0;
         this._physicalSizes[pidx] = offsetHeight;
-        if(this.items[pidx]){
-          newPhysicalSize += this._physicalSizes[pidx];
-        }
+        newPhysicalSize += this._physicalSizes[pidx];
         this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
         offsetHeight =+ offsetHeight;
       }, itemSet);
@@ -1275,12 +1310,7 @@ will only render 20.
         this._physicalSize = Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
       } else {
         oldPhysicalSize = (this._itemsPerRow === 1) ? oldPhysicalSize :  Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
-        /*
-          Issue : LOV showing empty spaces in bottom
-          Reason: After opening LOV for first time, with all items the _physicalSize will be more ex:2000px (for 100 records)
-                  Second time, when we open LOV, it is retaining 2000px but actual height should be 200px (for 10 records)
-        */
-        this._physicalSize = newPhysicalSize; //this._physicalSize + newPhysicalSize - oldPhysicalSize;
+        this._physicalSize = this._physicalSize + newPhysicalSize - oldPhysicalSize;
         this._itemsPerRow = 1;
       }
       // Update the average if it measured something.
