@@ -1130,13 +1130,15 @@ will only render 20.
       } else if (change.path === 'items.splices') {
         this._adjustVirtualIndex(change.value.indexSplices);
         this._virtualCount = this.items ? this.items.length : 0;
+
+        // Commented this code no need of _render while preparing virtual space in iron-list 
         // Render only if the affected index is rendered.
-        var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
-          return this._isIndexRendered(splice.index);
-        }, this);
-        if (!this._isClientFull() || affectedIndexRendered) {
-          this._debounce('_render', this._render, ANIMATION_FRAME);
-        }
+        // var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
+        //   return this._isIndexRendered(splice.index);
+        // }, this);
+        // if (!this._isClientFull() || affectedIndexRendered) {
+        //   this._debounce('_render', this._render, ANIMATION_FRAME);
+        // }
       } else if (change.path !== 'items.length') {
         this._forwardItemPath(change.path, change.value);
       }
@@ -1909,12 +1911,13 @@ will only render 20.
 
     _debounce: function(name, cb, asyncModule) {
       if (IS_V2) {
-        this._debouncers = this._debouncers || {};
-        this._debouncers[name] = Polymer.Debouncer.debounce(
-          this._debouncers[name],
-          asyncModule,
-          cb.bind(this));
-        Polymer.enqueueDebouncer(this._debouncers[name]);
+        // this._debouncers = this._debouncers || {};
+        // this._debouncers[name] = Polymer.Debouncer.debounce(
+        //   this._debouncers[name],
+        //   asyncModule,
+        //   cb.bind(this));
+        // Polymer.enqueueDebouncer(this._debouncers[name]);
+        cb.bind(this)();
       } else {
         Polymer.dom.addDebouncer(this.debounce(name, cb));
       }
