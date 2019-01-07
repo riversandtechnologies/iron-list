@@ -1133,12 +1133,12 @@ will only render 20.
 
         // Commented this code no need of _render while preparing virtual space in iron-list 
         // Render only if the affected index is rendered.
-        // var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
-        //   return this._isIndexRendered(splice.index);
-        // }, this);
-        // if (!this._isClientFull() || affectedIndexRendered) {
-        //   this._debounce('_render', this._render, ANIMATION_FRAME);
-        // }
+        var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
+          return this._isIndexRendered(splice.index);
+        }, this);
+        if (!this._isClientFull() || affectedIndexRendered) {
+          this._debounce('_render', this._render, ANIMATION_FRAME);
+        }
       } else if (change.path !== 'items.length') {
         this._forwardItemPath(change.path, change.value);
       }
