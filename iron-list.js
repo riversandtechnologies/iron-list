@@ -1143,6 +1143,7 @@ Polymer$0({
     } else if (change.path === 'items.splices') {
       this._adjustVirtualIndex(change.value.indexSplices);
       this._virtualCount = this.items ? this.items.length : 0;
+      
       // Only blur if at least one item is added or removed.
       var itemAddedOrRemoved = change.value.indexSplices.some(function(splice) {
         return splice.addedCount > 0 || splice.removed.length > 0;
@@ -1155,15 +1156,15 @@ Polymer$0({
           activeElement.blur();
         }
       }
-      // Render only if the affected index is rendered.
-      var affectedIndexRendered =
-          change.value.indexSplices.some(function(splice) {
-            return splice.index + splice.addedCount >= this._virtualStart &&
-                splice.index <= this._virtualEnd;
-          }, this);
-      if (!this._isClientFull() || affectedIndexRendered) {
-        this._debounce('_render', this._render, ANIMATION_FRAME);
-      }
+      // // Render only if the affected index is rendered.
+      // var affectedIndexRendered =
+      //     change.value.indexSplices.some(function(splice) {
+      //       return splice.index + splice.addedCount >= this._virtualStart &&
+      //           splice.index <= this._virtualEnd;
+      //     }, this);
+      // if (!this._isClientFull() || affectedIndexRendered) {
+      //   this._debounce('_render', this._render, ANIMATION_FRAME);
+      // }
     } else if (change.path !== 'items.length') {
       this._forwardItemPath(change.path, change.value);
     }
@@ -1394,7 +1395,7 @@ Polymer$0({
 
       this._iterateItems(function(pidx, vidx) {
         var modulus = vidx % this._itemsPerRow;
-        var x = Math.floor((modulus * this._itemWidth) + rowOffset);
+        var x = Math.floor((modulus * this._itemWidth) + 10);
         if (this._isRTL) {
           x = x * -1;
         }
@@ -1997,10 +1998,11 @@ Polymer$0({
 
   _debounce: function(name, cb, asyncModule) {
     if (IS_V2) {
-      this._debouncers = this._debouncers || {};
-      this._debouncers[name] = Debouncer.debounce(
-          this._debouncers[name], asyncModule, cb.bind(this));
-      enqueueDebouncer(this._debouncers[name]);
+      // this._debouncers = this._debouncers || {};
+      // this._debouncers[name] = Debouncer.debounce(
+      //     this._debouncers[name], asyncModule, cb.bind(this));
+      // enqueueDebouncer(this._debouncers[name]);
+      cb.bind(this)();
     } else {
       addDebouncer(this.debounce(name, cb));
     }
