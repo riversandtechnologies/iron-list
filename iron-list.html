@@ -1130,13 +1130,15 @@ will only render 20.
       } else if (change.path === 'items.splices') {
         this._adjustVirtualIndex(change.value.indexSplices);
         this._virtualCount = this.items ? this.items.length : 0;
+
+        // Commented this code no need of _render while preparing virtual space in iron-list 
         // Render only if the affected index is rendered.
-        var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
-          return this._isIndexRendered(splice.index);
-        }, this);
-        if (!this._isClientFull() || affectedIndexRendered) {
-          this._debounce('_render', this._render, ANIMATION_FRAME);
-        }
+        // var affectedIndexRendered = change.value.indexSplices.some(function(splice) {
+        //   return this._isIndexRendered(splice.index);
+        // }, this);
+        // if (!this._isClientFull() || affectedIndexRendered) {
+        //   this._debounce('_render', this._render, ANIMATION_FRAME);
+        // }
       } else if (change.path !== 'items.length') {
         this._forwardItemPath(change.path, change.value);
       }
@@ -1337,11 +1339,9 @@ will only render 20.
 
       if (this.grid) {
         var totalItemWidth = this._itemsPerRow * this._itemWidth;
-        var rowOffset = (this._viewportWidth - totalItemWidth) / 2;
-
         this._iterateItems(function(pidx, vidx) {
           var modulus = vidx % this._itemsPerRow;
-          var x = Math.floor((modulus * this._itemWidth) + rowOffset);
+          var x = Math.floor((modulus * this._itemWidth) + 10);
           if (this._isRTL) {
             x = x * -1;
           }
@@ -1886,13 +1886,16 @@ will only render 20.
     _keydownHandler: function(e) {
       switch (e.keyCode) {
         case /* ARROW_DOWN */ 40:
-          e.preventDefault();
+          if (this._focusedVirtualIndex < this._virtualCount - 1)
+            e.preventDefault();
           this._focusPhysicalItem(this._focusedVirtualIndex + (this.grid ? this._itemsPerRow : 1));
           break;
         case /* ARROW_RIGHT */ 39:
           if (this.grid) this._focusPhysicalItem(this._focusedVirtualIndex + (this._isRTL ? -1 : 1));
           break;
         case /* ARROW_UP */ 38:
+          if (this._focusedVirtualIndex > 0)
+            e.preventDefault();
           this._focusPhysicalItem(this._focusedVirtualIndex - (this.grid ? this._itemsPerRow : 1));
           break;
         case /* ARROW_LEFT */ 37:
@@ -1911,12 +1914,13 @@ will only render 20.
 
     _debounce: function(name, cb, asyncModule) {
       if (IS_V2) {
-        this._debouncers = this._debouncers || {};
-        this._debouncers[name] = Polymer.Debouncer.debounce(
-          this._debouncers[name],
-          asyncModule,
-          cb.bind(this));
-        Polymer.enqueueDebouncer(this._debouncers[name]);
+        // this._debouncers = this._debouncers || {};
+        // this._debouncers[name] = Polymer.Debouncer.debounce(
+        //   this._debouncers[name],
+        //   asyncModule,
+        //   cb.bind(this));
+        // Polymer.enqueueDebouncer(this._debouncers[name]);
+        cb.bind(this)();
       } else {
         Polymer.dom.addDebouncer(this.debounce(name, cb));
       }
