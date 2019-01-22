@@ -271,12 +271,6 @@ Polymer$0({
         display: block;
       }
 
-      @media only screen and (-webkit-max-device-pixel-ratio: 1) {
-        :host {
-          will-change: transform;
-        }
-      }
-
       #items {
         @apply --iron-list-items-container;
         position: relative;
@@ -291,7 +285,6 @@ Polymer$0({
         margin: 0;
         position: absolute;
         top: 0;
-        will-change: transform;
       }
     </style>
 
