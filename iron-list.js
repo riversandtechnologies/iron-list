@@ -1383,9 +1383,6 @@ Polymer$0({
     var y = this._physicalTop;
 
     if (this.grid) {
-      var totalItemWidth = this._itemsPerRow * this._itemWidth;
-      var rowOffset = (this._viewportWidth - totalItemWidth) / 2;
-
       this._iterateItems(function(pidx, vidx) {
         var modulus = vidx % this._itemsPerRow;
         var x = Math.floor((modulus * this._itemWidth) + 10);
