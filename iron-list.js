@@ -267,32 +267,25 @@ items, and iron-list will only render 20.
 Polymer$0({
   _template: html`
     <style>
-      :host {
-        display: block;
-      }
+    :host {
+      display: block;
+    }
 
-      @media only screen and (-webkit-max-device-pixel-ratio: 1) {
-        :host {
-          will-change: transform;
-        }
-      }
+    #items {
+      @apply --iron-list-items-container;
+      position: relative;
+    }
 
-      #items {
-        @apply --iron-list-items-container;
-        position: relative;
-      }
+    :host(:not([grid])) #items > ::slotted(*) {
+      width: 100%;
+    }
 
-      :host(:not([grid])) #items > ::slotted(*) {
-        width: 100%;
-      }
-
-      #items > ::slotted(*) {
-        box-sizing: border-box;
-        margin: 0;
-        position: absolute;
-        top: 0;
-        will-change: transform;
-      }
+    #items > ::slotted(*) {
+      box-sizing: border-box;
+      margin: 0;
+      position: absolute;
+      top: 0;       
+    }
     </style>
 
     <array-selector id="selector" items="{{items}}" selected="{{selectedItems}}" selected-item="{{selectedItem}}"></array-selector>
