@@ -1332,10 +1332,10 @@ Polymer$0({
     var oldPhysicalSize = 0;
     var prevAvgCount = this._physicalAverageCount;
     var prevPhysicalAvg = this._physicalAverage;
-
+    let offsetHeight = this._physicalItems[0].offsetHeight;    
     this._iterateItems(function(pidx, vidx) {
       oldPhysicalSize += this._physicalSizes[pidx];
-      this._physicalSizes[pidx] = this._physicalItems[pidx].offsetHeight;
+      this._physicalSizes[pidx] = offsetHeight;
       newPhysicalSize += this._physicalSizes[pidx];
       this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
     }, itemSet);
@@ -1480,6 +1480,7 @@ Polymer$0({
     if (forceUpdate ||
         Math.abs(this._estScrollHeight - this._scrollHeight) >=
             this._viewportHeight) {
+      this._estScrollHeight = this._virtualRowCount * this._physicalItems[0].offsetHeight;
       this.$.items.style.height = this._estScrollHeight + 'px';
       this._scrollHeight = this._estScrollHeight;
     }
