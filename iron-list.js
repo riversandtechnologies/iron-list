@@ -814,9 +814,9 @@ Polymer$0({
         // In Edge when user scroll all the way down in iron-list and from there directly come to top record of list.
         // Then list is not working properly calculation of list instances are going for toss.
         // Note: Scroll event is getting fired and served in chrome faster then Edge.
-        if(currentScrollTop == 0) {
-            this._physicalStart = 0;
-        }
+        //if(currentScrollTop == 0) {
+          //  this._physicalStart = 0;
+        //}
 
       // Estimate new physical offset.
       this._physicalTop = Math.floor(this._virtualStart / this._itemsPerRow) *
@@ -1333,14 +1333,11 @@ Polymer$0({
     var prevAvgCount = this._physicalAverageCount;
     var prevPhysicalAvg = this._physicalAverage;
 
-    let offsetHeight = this._physicalItems[0].offsetHeight;
-
     this._iterateItems(function(pidx, vidx) {
       oldPhysicalSize += this._physicalSizes[pidx];
-      this._physicalSizes[pidx] = offsetHeight;
+      this._physicalSizes[pidx] = this._physicalItems[pidx].offsetHeight;
       newPhysicalSize += this._physicalSizes[pidx];
       this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
-      offsetHeight =+ offsetHeight;
     }, itemSet);
 
     if (this.grid) {
