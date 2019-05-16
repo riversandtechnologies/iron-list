@@ -13,6 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<<<<<<< HEAD
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
@@ -23,6 +24,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="fixtures/helpers.html">
   <link rel="import" href="fixtures/x-list.html">
 
+=======
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -34,8 +39,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
   <script>
 
+=======
+  <script type="module">
+    import './fixtures/helpers.js';
+    import './fixtures/x-list.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
     suite('Dynamic item size', function() {
       var list, container;
 
@@ -44,51 +55,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         list = container.list;
       });
 
-      test('update size using item index', function(done) {
+      test('update size using item index', function() {
         list.items = buildDataSet(100);
 
-        flush(function() {
-          var firstItem = getFirstItemFromList(list);
-          var initHeight = firstItem.offsetHeight;
+        PolymerFlush();
+        var firstItem = getFirstItemFromList(list);
+        var initHeight = firstItem.offsetHeight;
 
-          list.set('items.0.index', '1\n2\n3\n4');
-          list.updateSizeForItem(0);
-          assert.isAbove(firstItem.offsetHeight, initHeight*3);
-          list.set('items.0.index', '1');
-          list.updateSizeForItem(0);
-          assert.equal(firstItem.offsetHeight, initHeight);
-          done();
-        });
+        list.set('items.0.index', '1\n2\n3\n4');
+        list.updateSizeForItem(0);
+        assert.isAbove(firstItem.offsetHeight, initHeight * 3);
+        list.set('items.0.index', '1');
+        list.updateSizeForItem(0);
+        assert.equal(firstItem.offsetHeight, initHeight);
       });
 
-      test('update size using item object', function(done) {
+      test('update size using item object', function() {
         list.items = buildDataSet(100);
 
-        flush(function() {
-          var firstItem = getFirstItemFromList(list);
-          var initHeight = firstItem.offsetHeight;
+        PolymerFlush();
+        var firstItem = getFirstItemFromList(list);
+        var initHeight = firstItem.offsetHeight;
 
-          list.set('items.0.index', '1\n2\n3\n4');
-          list.updateSizeForItem(list.items[0]);
-          assert.isAbove(firstItem.offsetHeight, initHeight*3);
-          list.set('items.0.index', '1');
-          list.updateSizeForItem(list.items[0]);
-          assert.equal(firstItem.offsetHeight, initHeight);
-          done();
-        });
+        list.set('items.0.index', '1\n2\n3\n4');
+        list.updateSizeForItem(list.items[0]);
+        assert.isAbove(firstItem.offsetHeight, initHeight * 3);
+        list.set('items.0.index', '1');
+        list.updateSizeForItem(list.items[0]);
+        assert.equal(firstItem.offsetHeight, initHeight);
       });
 
-      test('ignore items that are not rendered', function(done) {
+      test('ignore items that are not rendered', function() {
         list.items = buildDataSet(100);
 
-        flush(function() {
-          list.updateSizeForItem(list.items[list.items.length - 1]);
-          done();
-        });
+        PolymerFlush();
+        list.updateSizeForItem(list.items[list.items.length - 1]);
       });
-
     });
-
   </script>
 
 </body>

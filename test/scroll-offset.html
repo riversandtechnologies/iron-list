@@ -13,13 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-
-  <link rel="import" href="fixtures/helpers.html">
-  <link rel="import" href="../iron-list.html">
-
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
   <style>
 
     body {
@@ -65,8 +60,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
   <script>
 
+=======
+  <script type="module">
+    import './fixtures/helpers.js';
+    import '../iron-list.js';
+    import {flush} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
     suite('scrollOffset property', function() {
       var list, container;
 
@@ -77,13 +79,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('value', function() {
         list.items = buildDataSet(100);
-        Polymer.dom.flush();
+        flush();
         assert.equal(list.scrollOffset, 100);
       });
 
       test('firstVisibleIndex', function(done) {
         list.items = buildDataSet(100);
-        Polymer.dom.flush();
+        flush();
         window.scrollTo(0, 1000);
         requestAnimationFrame(function() {
           setTimeout(function() {
@@ -96,19 +98,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('lastVisibleIndex', function(done) {
         list.items = buildDataSet(100);
-        Polymer.dom.flush();
+        flush();
         window.scrollTo(0, 1000);
         requestAnimationFrame(function() {
           setTimeout(function() {
-            var idx = Math.floor((window.pageYOffset + window.innerHeight - list.scrollOffset) / 50);
+            var idx = Math.floor(
+                (window.pageYOffset + window.innerHeight - list.scrollOffset) / 50);
             assert.equal(list.lastVisibleIndex, idx);
             done();
           });
         });
       });
-
     });
-
   </script>
 
 </body>

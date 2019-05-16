@@ -13,16 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-
-  <link rel="import" href="fixtures/helpers.html">
-  <link rel="import" href="fixtures/x-list.html">
-
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -34,8 +26,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
   <script>
 
+=======
+  <script type="module">
+    import './fixtures/helpers.js';
+    import './fixtures/x-list.js';
+    import '@polymer/iron-test-helpers/mock-interactions.js';
+    import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
     suite('selection', function() {
       var list, container;
 
@@ -237,6 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         done();
       });
 
+<<<<<<< HEAD
     });
 
      test('selectedAs', function(done) {
@@ -258,6 +259,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.isTrue(list.modelForElement(list._physicalItems[10]).selected);
           done();
         });
+=======
+      test('toggle', function() {
+        list.items = buildDataSet(100);
+        PolymerFlush();
+        list.selectionEnabled = true;
+        MockInteractions.tap(list._physicalItems[0]);
+        assert.deepEqual(list.selectedItem, list.items[0]);
+        MockInteractions.tap(list._physicalItems[0]);
+        assert.isNull(list.selectedItem);
+        MockInteractions.tap(list._physicalItems[0]);
+        list.clearSelection();
+        assert.isNull(list.selectedItem);
+      });
+
+      test('selectedAs', function() {
+        list.items = buildDataSet(100);
+        PolymerFlush();
+        // Multi selection.
+        list.multiSelection = true;
+        assert.isFalse(list.modelForElement(list._physicalItems[0]).selected);
+        list.selectIndex(0);
+        assert.isTrue(list.modelForElement(list._physicalItems[0]).selected);
+        list.toggleSelectionForIndex(0);
+        assert.isFalse(list.modelForElement(list._physicalItems[0]).selected);
+        // Single selection.
+        list.multiSelection = false;
+        list.selectIndex(0);
+        list.selectIndex(10);
+        assert.isFalse(list.modelForElement(list._physicalItems[0]).selected);
+        assert.isTrue(list.modelForElement(list._physicalItems[10]).selected);
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
       });
 
       test('splice a selected item', function(done) {
@@ -334,19 +366,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //   assert.equal(list.selectedItems.length, 0);
       // });
 
-      test('tapping on a focusable child should not change the selection', function() {
-        list.items = buildDataSet(1);
-        list.selectionEnabled = true;
-        PolymerFlush();
-        var node = document.createElement('div');
-        node.innerText = 'focusable';
-        node.tabIndex = 0;
-        Polymer.dom(getFirstItemFromList(list)).appendChild(node);
-        PolymerFlush();
-        node.focus();
-        MockInteractions.tap(node);
-        assert.isNull(list.selectedItem);
-      });
+      test(
+          'tapping on a focusable child should not change the selection',
+          function() {
+            list.items = buildDataSet(1);
+            list.selectionEnabled = true;
+            PolymerFlush();
+            var node = document.createElement('div');
+            node.innerText = 'focusable';
+            node.tabIndex = 0;
+            dom(getFirstItemFromList(list)).appendChild(node);
+            PolymerFlush();
+            node.focus();
+            MockInteractions.tap(node);
+            assert.isNull(list.selectedItem);
+          });
 
       test('try to select active element', function() {
         container.useTabIndex = false;
@@ -359,7 +393,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isNotNull(list.selectedItem);
       });
     });
-
   </script>
 
 </body>

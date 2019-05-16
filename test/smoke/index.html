@@ -17,14 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <link rel="import" href="../../../polymer/polymer.html">
-  <link rel="import" href="../../../paper-styles/demo-pages.html">
-
-  <link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
-  <link rel="import" href="../../iron-list.html">
-  <link rel="import" href="dummy-data.html">
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
   <dom-module id="x-app">
     <template>
@@ -159,42 +152,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </dom-module>
 
-  <script>
+  <script type="module">
+    import '@polymer/polymer/polymer-legacy.js';
+    import '@polymer/paper-styles/demo-pages.js';
+    import '@polymer/iron-flex-layout/iron-flex-layout.js';
+    import '../../iron-list.js';
 
-    HTMLImports.whenReady(function() {
+    import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
 
-      Polymer({
+    import {dummyData} from './dummy-data.js';
 
-        is: 'x-app',
+    Polymer({
 
-        properties: {
-          data: {
-            type: Array,
-            value: window.dummyData
-          },
-          separator: {
-            type: String,
-            value: '|'
-          },
-          showing: {
-            type: Boolean,
-            value: false
-          }
-        },
-        pictureForItem: function(item, index) {
-          if (item == null || index == null) {
-            console.log('bad');
-            return '';
-          }
-          return item.picture + '/' + item.guid.slice(0,6);
-        },
-        iconForItem: function(item) {
-          return item.gender == 'female' ? 'star' : 'star-outline';
+      is: 'x-app',
+
+      properties: {
+        data: {type: Array, value: dummyData},
+        separator: {type: String, value: '|'},
+        showing: {type: Boolean, value: false}
+      },
+      pictureForItem: function(item, index) {
+        if (item == null || index == null) {
+          console.log('bad');
+          return '';
         }
-      });
-
+        return item.picture + '/' + item.guid.slice(0, 6);
+      },
+      iconForItem: function(item) {
+        return item.gender == 'female' ? 'star' : 'star-outline';
+      }
     });
-
   </script>
 
   <custom-style>

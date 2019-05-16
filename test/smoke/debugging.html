@@ -19,12 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <link rel="import" href="../../../polymer/polymer.html">
-  <link rel="import" href="../../../paper-button/paper-button.html">
-
-  <link rel="import" href="../../iron-list.html">
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
   <custom-style>
     <style is="custom-style">
@@ -139,26 +134,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
     </template>
 
-    <script>
-    function arrayFill(size, value) {
-      return (new Array(size)).fill(value, 0, size);
-    }
-
-    function randomArrayFill(size, min, max) {
-      var a = [];
-      while (a.length < size) {
-        a.push(parseInt(Math.random() * (max-min+1)) + min);
+    <script type="module">
+      import '@polymer/polymer/polymer-legacy.js';
+      import '@polymer/paper-button/paper-button.js';
+      import '../../iron-list.js';
+      import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+      function arrayFill(size, value) {
+        return (new Array(size)).fill(value, 0, size);
       }
-      return a;
-    }
 
-    function asyncJob(fn) {
-      if (fn()) {
-        setTimeout(asyncJob.bind(null, fn));
+      function randomArrayFill(size, min, max) {
+        var a = [];
+        while (a.length < size) {
+          a.push(parseInt(Math.random() * (max - min + 1)) + min);
+        }
+        return a;
       }
-    }
 
-    window.addEventListener('WebComponentsReady', function() {
+      function asyncJob(fn) {
+        if (fn()) {
+          setTimeout(asyncJob.bind(null, fn));
+        }
+      }
+
       Polymer({
         is: 'x-demo',
 
@@ -170,11 +168,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.list1.items = arrayFill(100, 50);
 
           this.$.scroller.addEventListener('scroll', function() {
-            this.$.list1.style.top = (-this.$.scroller.scrollTop+100) + 'px';
+            this.$.list1.style.top = (-this.$.scroller.scrollTop + 100) + 'px';
           }.bind(this));
-        }
+        },
       });
-    });
     </script>
   </dom-module>
 
