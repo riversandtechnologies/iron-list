@@ -13,16 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-
-  <link rel="import" href="fixtures/helpers.html">
-  <link rel="import" href="fixtures/x-list.html">
-
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -34,8 +26,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
   <script>
 
+=======
+  <script type="module">
+    import './fixtures/helpers.js';
+    import './fixtures/x-list.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
     suite('Different heights', function() {
       var list, container;
 
@@ -45,19 +43,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('render without gaps 1', function(done) {
-        list.items = [
-          {index: 0, height: 791},
-          {index: 1, height: 671}
-        ];
-        list.push('items',
-          {index: 2, height: 251},
-          {index: 3, height: 191},
-          {index: 4, height: 151},
-          {index: 5, height: 191},
-          {index: 6, height: 51},
-          {index: 7, height: 51},
-          {index: 8, height: 51}
-        );
+        list.items = [{index: 0, height: 791}, {index: 1, height: 671}];
+        list.push(
+            'items',
+            {index: 2, height: 251},
+            {index: 3, height: 191},
+            {index: 4, height: 151},
+            {index: 5, height: 191},
+            {index: 6, height: 51},
+            {index: 7, height: 51},
+            {index: 8, height: 51});
         simulateScroll({
           list: list,
           contribution: 100,
@@ -90,10 +85,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('render without gaps 3', function(done) {
-        var heights = [20, 100, 140, 117, 800, 50, 15, 80, 90, 255, 20, 15, 19, 250, 314];
+        var heights =
+            [20, 100, 140, 117, 800, 50, 15, 80, 90, 255, 20, 15, 19, 250, 314];
 
         list.items = heights.map(function(height) {
-          return { height: height };
+          return {height: height};
         });
 
         simulateScroll({
@@ -106,9 +102,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         });
       });
-
     });
-
   </script>
 
 </body>

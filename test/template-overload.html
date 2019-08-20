@@ -13,13 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-
-  <link rel="import" href="fixtures/helpers.html">
-  <link rel="import" href="fixtures/o-list.html">
-
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -41,8 +36,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
   <script>
 
+=======
+  <script type="module">
+    import './fixtures/helpers.js';
+    import './fixtures/o-list.js';
+    import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
     suite('template overloading', function() {
       var list;
 
@@ -50,36 +52,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         list = fixture('templateOverloadList');
       });
 
-      test('check physical item size', function(done) {
+      test('check physical item size', function() {
         var setSize = 10;
         list.items = buildDataSet(setSize);
 
-        flush(function() {
-          assert.equal(list.items.length, setSize);
-          done();
-        });
+        PolymerFlush();
+        assert.equal(list.items.length, setSize);
       });
 
-      test('check item template', function(done) {
+      test('check item template', function() {
         list.items = buildDataSet(1);
 
-        flush(function() {
-          assert.isNotNull(Polymer.dom(list).querySelector('.overloaded-template'));
-          done();
-        });
+        PolymerFlush();
+        assert.isNotNull(dom(list).querySelector('.overloaded-template'));
       });
 
-      test('check count of physical items', function(done) {
+      test('check count of physical items', function() {
         var setSize = 1;
         list.items = buildDataSet(setSize);
 
-        flush(function() {
-          assert.equal(Polymer.dom(list).querySelectorAll('*').length - 1, setSize);
-          done();
-        });
+        PolymerFlush();
+        assert.equal(dom(list).querySelectorAll('*').length - 1, setSize);
       });
     });
-
   </script>
 
 </body>

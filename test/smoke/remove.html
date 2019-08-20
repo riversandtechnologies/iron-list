@@ -19,10 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <link rel="import" href="../../../polymer/polymer.html">
-  <link rel="import" href="../../iron-list.html">
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
 </head>
 <body unresolved>
@@ -52,15 +49,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <a href="#" on-click="_setItems">set items</a>
     </template>
 
-    <script>
-    HTMLImports.whenReady(function() {
+    <script type="module">
+      import '@polymer/polymer/polymer-legacy.js';
+      import '../../iron-list.js';
+      import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
       Polymer({
         is: 'x-demo',
-        
+
         attached() {
           this._setItems();
         },
-        
+
         _removeItem(e) {
           e.preventDefault();
 
@@ -72,15 +71,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _setItems() {
           var items = [];
           for (var i = 0; i < 1000; ++i) {
-            items.push({
-              name: 'a'+i,
-              modelIndex: i
-            });
+            items.push({name: 'a' + i, modelIndex: i});
           }
           this.items = items;
-        }
+        },
       });
-    });
     </script>
   </dom-module>
 

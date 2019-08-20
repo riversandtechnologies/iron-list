@@ -13,15 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
-
-  <link rel="import" href="fixtures/helpers.html">
-  <link rel="import" href="fixtures/x-list.html">
-
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -39,8 +32,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
   <script>
 
+=======
+  <script type="module">
+    import './fixtures/helpers.js';
+    import './fixtures/x-list.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
     suite('dynamic physical count', function() {
       var list, container;
 
@@ -55,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         list.scrollTop = 0;
         var lastItem = getLastItemFromList(list);
         var lastItemHeight = lastItem.offsetHeight;
-        var expectedFinalItem = container.listHeight/lastItemHeight - 1;
+        var expectedFinalItem = container.listHeight / lastItemHeight - 1;
 
         assert.equal(list.offsetHeight, container.listHeight);
         assert.equal(lastItemHeight, 4);
@@ -77,10 +76,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('increase pool size after resizing the list', function(done) {
         flush(function() {
           list.style.display = '';
-          assert.notEqual(getFirstItemFromList(list).textContent, '0', 'Item should not be rendered');
+          assert.notEqual(
+              getFirstItemFromList(list).textContent,
+              '0',
+              'Item should not be rendered');
           list.fire('iron-resize');
           PolymerFlush();
-          assert.equal(getFirstItemFromList(list).textContent, '0', 'Item should be rendered');
+          assert.equal(
+              getFirstItemFromList(list).textContent,
+              '0',
+              'Item should be rendered');
           done();
         });
       });
@@ -100,36 +105,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           list.style.display = '';
           list.fire('iron-resize');
           PolymerFlush();
-          assert.equal(list.lastVisibleIndex, 49, 'The 50th item should be visible.');
+          assert.equal(
+              list.lastVisibleIndex, 49, 'The 50th item should be visible.');
           container.listHeight = 300;
           requestAnimationFrame(function() {
             list.fire('iron-resize');
             PolymerFlush();
-            assert.equal(list.lastVisibleIndex, 74, 'The last visible changed as expected.')
+            assert.equal(
+                list.lastVisibleIndex, 74, 'The last visible changed as expected.')
             done();
           });
         });
       });
 
-      test('first visible items should change on resize when scrolled to the end of the list', function(done) {
-        flush(function() {
-          list.style.display = '';
-          list.fire('iron-resize');
-          list.scrollToIndex(199);
-          PolymerFlush();
-          assert.equal(list.lastVisibleIndex, 199, 'Scroll is maxed out.');
-          assert.equal(list.firstVisibleIndex, 150, 'The first visible index is appropriately set.');
-          container.listHeight = 300;
-          list.fire('iron-resize');
-          flush(function() {
-            assert.equal(list.lastVisibleIndex, 199, 'Scroll is maxed out.');
-            assert.equal(list.firstVisibleIndex, 125, 'The first visible item changed as expected.')
-            done();
+      test(
+          'first visible items should change on resize when scrolled to the end of the list',
+          function(done) {
+            flush(function() {
+              list.style.display = '';
+              list.fire('iron-resize');
+              list.scrollToIndex(199);
+              PolymerFlush();
+              assert.equal(list.lastVisibleIndex, 199, 'Scroll is maxed out.');
+              assert.equal(
+                  list.firstVisibleIndex,
+                  150,
+                  'The first visible index is appropriately set.');
+              container.listHeight = 300;
+              list.fire('iron-resize');
+              PolymerFlush();
+              flush(function() {
+                assert.equal(list.lastVisibleIndex, 199, 'Scroll is maxed out.');
+                assert.equal(
+                    list.firstVisibleIndex,
+                    125,
+                    'The first visible item changed as expected.')
+                done();
+              });
+            });
           });
-        });
-      });
     });
-
   </script>
 
 </body>

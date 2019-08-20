@@ -13,11 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="fixtures/helpers.html">
-  <link rel="import" href="fixtures/x-list.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -38,10 +35,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
 
+<<<<<<< HEAD
 <script>
 
 
 
+=======
+<script type="module">
+  import './fixtures/helpers.js';
+  import './fixtures/x-list.js';
+  import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
   suite('basic features', function() {
     var list, container;
 
@@ -120,7 +124,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       PolymerFlush();
       list.scroll(0, 100);
       list.fire('scroll');
-      assert.equal(list.lastVisibleIndex,
+      assert.equal(
+          list.lastVisibleIndex,
           ((list._scrollTop + container.listHeight) / container.itemHeight) - 1);
     });
 
@@ -136,7 +141,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var rowHeight = getFirstItemFromList(list).offsetHeight;
       var viewportHeight = list.offsetHeight;
-      var itemsPerViewport = Math.floor(viewportHeight/rowHeight);
+      var itemsPerViewport = Math.floor(viewportHeight / rowHeight);
 
       list.scrollToIndex(99);
       assert.equal(list.firstVisibleIndex, list.items.length - itemsPerViewport);
@@ -151,7 +156,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('scroll to index while not attached', function() {
       var tmpList = document.createElement('iron-list');
-      Polymer.dom(tmpList).appendChild(document.createElement('template'));
+      dom(tmpList).appendChild(document.createElement('template'));
       tmpList.items = buildDataSet(100);
       PolymerFlush();
       assert.equal(tmpList._virtualStart, 0);
@@ -171,7 +176,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var rowHeight = getFirstItemFromList(list).offsetHeight;
       var viewportHeight = list.offsetHeight;
-      var itemsPerViewport = Math.floor(viewportHeight/rowHeight);
+      var itemsPerViewport = Math.floor(viewportHeight / rowHeight);
 
       list.scrollToItem(list.items[99]);
       assert.equal(list.firstVisibleIndex, list.items.length - itemsPerViewport);
@@ -229,8 +234,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(list._scrollTop, 1000);
       list.items = buildDataSet(100);
       PolymerFlush();
-      assert.equal(list._scrollTop, 0,
-          'should reset the scroll position');
+      assert.equal(list._scrollTop, 0, 'should reset the scroll position');
       list.style.paddingTop = '100px';
       list.scrollTarget = document.documentElement;
       list.updateViewportBoundaries();
@@ -239,7 +243,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(list._scrollTop, 50);
       list.items = buildDataSet(100);
       PolymerFlush();
-      assert.equal(list._scrollTop, 50,
+      assert.equal(
+          list._scrollTop,
+          50,
           'should not reset the scroll position if the scrollTop is smaller than the paddingTop');
     });
 
@@ -256,7 +262,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       list.style.display = 'none';
       assert.isFalse(list._isVisible);
       list.style.display = '';
-      // what if the list is using document scroll, but no template has been stamped.
+      // what if the list is using document scroll, but no template has been
+      // stamped.
       list.style.height = '0px';
       assert.isTrue(list._isVisible);
     });
@@ -270,36 +277,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       list = scrollTarget.querySelector('x-list').list;
     });
 
-    test('should not called the scroll handler if the list is not rendered', function(done) {
-      list.items = buildDataSet(100);
-      list.scrollTarget = scrollTarget;
+    test(
+        'should not called the scroll handler if the list is not rendered',
+        function(done) {
+          list.items = buildDataSet(100);
+          list.scrollTarget = scrollTarget;
 
-      PolymerFlush();
+          PolymerFlush();
 
-      list.style.display = 'none';
-      list.fire('iron-resize');
-
-      var scrollerSpy = sinon.spy(list, '_update');
-      list.scroll(0, 1000);
-
-      requestAnimationFrame(function() {
-        setTimeout(function() {
-          assert.isFalse(scrollerSpy.called, 'should not update the list');
-
-          list.style.display = '';
+          list.style.display = 'none';
           list.fire('iron-resize');
+
+          var scrollerSpy = sinon.spy(list, '_update');
           list.scroll(0, 1000);
 
           requestAnimationFrame(function() {
             setTimeout(function() {
-              assert.isTrue(scrollerSpy.called, 'should update the list');
-             done();
+              assert.isFalse(scrollerSpy.called, 'should not update the list');
+
+              list.style.display = '';
+              list.fire('iron-resize');
+              list.scroll(0, 1000);
+
+              requestAnimationFrame(function() {
+                setTimeout(function() {
+                  assert.isTrue(scrollerSpy.called, 'should update the list');
+                  done();
+                });
+              });
             });
           });
         });
-      });
-    });
-
   });
 </script>
 

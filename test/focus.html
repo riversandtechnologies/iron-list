@@ -13,6 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <title>iron-list test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<<<<<<< HEAD
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
@@ -22,6 +23,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="fixtures/helpers.html">
   <link rel="import" href="fixtures/x-list.html">
 
+=======
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
 </head>
 <body>
   <!-- Issue: web-component-tester/issues/505 -->
@@ -33,8 +38,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+<<<<<<< HEAD
 <script>
 
+=======
+<script type="module">
+  import './fixtures/helpers.js';
+  import './fixtures/x-list.js';
+  import '@polymer/iron-test-helpers/mock-interactions.js';
+  import {flush as flush$0} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
   suite('basic features', function() {
     var list, container;
 
@@ -43,74 +56,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       list = container.list;
     });
 
-    test('first item should be focusable', function(done) {
+    test('first item should be focusable', function() {
       container.data = buildDataSet(100);
 
-      flush(function() {
-        assert.notEqual(getFirstItemFromList(list).tabIndex, -1);
-        done();
-      });
+      PolymerFlush();
+      assert.notEqual(getFirstItemFromList(list).tabIndex, -1);
     });
 
     test('focus the first item and then reset the items', function(done) {
       list.items = buildDataSet(100);
 
-      flush(function() {
-        getFirstItemFromList(list).focus();
+      PolymerFlush();
+      getFirstItemFromList(list).focus();
 
-        simulateScroll({
-          list: list,
-          contribution: 200,
-          target: 3000,
-          onScrollEnd: function() {
-            list.items = [];
-            flush(function() {
-              done();
-            });
-          }
-        });
+      simulateScroll({
+        list: list,
+        contribution: 200,
+        target: 3000,
+        onScrollEnd: function() {
+          list.items = [];
+          PolymerFlush();
+          done();
+        }
       });
     });
 
     test('focus the first item and then splice all the items', function(done) {
       list.items = buildDataSet(100);
 
-      flush(function() {
-        getFirstItemFromList(list).focus();
+      PolymerFlush();
+      getFirstItemFromList(list).focus();
 
-        simulateScroll({
-          list: list,
-          contribution: 200,
-          target: 3000,
-          onScrollEnd: function() {
-            list.splice('items', 0, list.items.length);
-            flush(function() {
-              done();
-            });
-          }
-        });
+      simulateScroll({
+        list: list,
+        contribution: 200,
+        target: 3000,
+        onScrollEnd: function() {
+          list.splice('items', 0, list.items.length);
+          PolymerFlush();
+          done();
+        }
       });
     });
 
-    test('blur when focused item is removed (#336)', function(done) {
+    test('blur when focused item is removed (#336)', function() {
       list.items = buildDataSet(100);
 
-      flush(function() {
-        getFirstItemFromList(list).focus();
+      PolymerFlush();
+      getFirstItemFromList(list).focus();
 
-        assert.notEqual(document.activeElement, document.body);
+      assert.notEqual(document.activeElement, document.body);
 
-        list.splice('items', 0, 1);
+      list.splice('items', 0, 1);
 
-        // HACK(keanulee): This test fails in IE11 if the window is not focused, so
-        // skip this test in that case.
-        if (document.hasFocus()) {
-          assert.equal(document.activeElement, document.body);
-        }
-        done();
-      });
+      // HACK(keanulee): This test fails in IE11 if the window is not focused,
+      // so skip this test in that case.
+      if (document.hasFocus()) {
+        assert.equal(document.activeElement, document.body);
+      }
     });
 
+<<<<<<< HEAD
     test('don\'t blur when items changed (#449)', function(done) {
       list.items = buildDataSet(100);
 
@@ -119,162 +125,221 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         list.parentNode.appendChild(button);
         button.focus();
         // getFirstItemFromList(list).focus();
-
-        assert.notEqual(document.activeElement, document.body);
-
-        list.items = buildDataSet(100);
-
-        assert.notEqual(document.activeElement, document.body);
-        done();
-      });
-    });
-
-    test('focusItem()', function(done) {
+=======
+    test('don\'t blur if no items are added or removed', function() {
       list.items = buildDataSet(100);
 
-      flush(function() {
-        var i = 1;
-        var item = getNthItemFromList(list, i);
+      PolymerFlush();
+      getFirstItemFromList(list).focus();
 
-        assert.equal(item.tabIndex, -1);
+      assert.notEqual(document.activeElement, document.body);
 
-        list.focusItem(i);
+      list.items[0]['foo'] = 'bar';
+      list.notifySplices('items', [
+        {index: 0, addedCount: 0, object: list.items, type: 'splice', removed: []}
+      ]);
 
-        assert.equal(item.tabIndex, 0);
-        done();
-      });
+      assert.notEqual(document.activeElement, document.body);
+    });
+
+    test('don\'t blur when items changed (#449)', function() {
+      list.items = buildDataSet(100);
+
+      PolymerFlush();
+      var button = document.createElement('button');
+      list.parentNode.appendChild(button);
+      button.focus();
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
+
+      assert.notEqual(document.activeElement, document.body);
+
+      list.items = buildDataSet(100);
+
+      assert.notEqual(document.activeElement, document.body);
+    });
+
+<<<<<<< HEAD
+    test('focusItem()', function(done) {
+=======
+    test(
+        'don\'t blur when activeElement is not a descendant of the list (#505, #507)',
+        function() {
+          list.items = buildDataSet(100);
+
+          PolymerFlush();
+          var button = document.createElement('button');
+          list.parentNode.appendChild(button);
+          button.focus();
+
+          assert.notEqual(document.activeElement, document.body);
+
+          list.splice('items', 0, 1);
+
+          assert.notEqual(document.activeElement, document.body);
+        });
+
+    test('focusItem()', function() {
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
+      list.items = buildDataSet(100);
+
+      PolymerFlush();
+      var i = 1;
+      var item = getNthItemFromList(list, i);
+
+      assert.equal(item.tabIndex, -1);
+
+      list.focusItem(i);
+
+      assert.equal(item.tabIndex, 0);
     });
 
     test('should not hide the list', function(done) {
       container.useTabIndex = true;
       list.items = buildDataSet(100);
 
-      flush(function() {
-        // this index isn't rendered yet
-        list._focusedIndex = list.items.length-1;
-        list.scrollTarget.addEventListener('scroll', function() {
-          var rect = list.getBoundingClientRect();
-          assert.isTrue(rect.top + rect.height > 0);
-          done();
-        });
-        // trigger the scroll event
-        list._scrollTop = 1000;
+      PolymerFlush();
+      // this index isn't rendered yet
+      list._focusedIndex = list.items.length - 1;
+      list.scrollTarget.addEventListener('scroll', function() {
+        var rect = list.getBoundingClientRect();
+        assert.isTrue(rect.top + rect.height > 0);
+        done();
       });
+      // trigger the scroll event
+      list._scrollTop = 1000;
     });
 
-    test('list focus change with down arrow', function(done) {
+    test('list focus change with down arrow', function() {
       container.useTabIndex = true;
       list.items = buildDataSet(100);
 
-      flush(function() {
-        var initialItem = getFirstItemFromList(list);
-        var itemToFocus = getNthItemFromList(list, 1);
-        initialItem.focus();
-        flush(function() {
-          MockInteractions.pressAndReleaseKeyOn(list, 40); // down
-          flush(function() {
-            assert.notEqual(itemToFocus.tabIndex, -1);
-            done();
-          });
-        });
-      });
+      PolymerFlush();
+      var initialItem = getFirstItemFromList(list);
+      var itemToFocus = getNthItemFromList(list, 1);
+      initialItem.focus();
+      PolymerFlush();
+      MockInteractions.pressAndReleaseKeyOn(list, 40);  // down
+      PolymerFlush();
+      assert.notEqual(itemToFocus.tabIndex, -1);
     });
 
+<<<<<<< HEAD
     test('list focus change with up arrow', function(done) {
+=======
+    test(
+        'list focus change with down arrow after removing item (#512)',
+        function() {
+          container.useTabIndex = true;
+          list.items = buildDataSet(100);
+          list.splice('items', 0, 1);
+
+          PolymerFlush();
+          var initialItem = getFirstItemFromList(list);
+          var itemToFocus = getNthItemFromList(list, 1);
+          initialItem.focus();
+          PolymerFlush();
+          MockInteractions.pressAndReleaseKeyOn(list, 40);  // down
+          PolymerFlush();
+          assert.notEqual(itemToFocus.tabIndex, -1);
+        });
+
+    test('list focus change with up arrow', function() {
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
       list.items = buildDataSet(100);
 
-      flush(function() {
-        var initialItem = getNthItemFromList(list, 1);
-        var itemToFocus = getFirstItemFromList(list);
-        initialItem.focus();
-        flush(function() {
-          MockInteractions.pressAndReleaseKeyOn(list, 38); // up
-          flush(function() {
-            assert.notEqual(itemToFocus.tabIndex, -1);
+      PolymerFlush();
+      var initialItem = getNthItemFromList(list, 1);
+      var itemToFocus = getFirstItemFromList(list);
+      initialItem.focus();
+      PolymerFlush();
+      MockInteractions.pressAndReleaseKeyOn(list, 38);  // up
+      PolymerFlush();
+      assert.notEqual(itemToFocus.tabIndex, -1);
+    });
+
+    test(
+        'up arrow when first item has focus, defaultPrevented is false',
+        function(done) {
+          list.items = buildDataSet(2);
+          PolymerFlush();
+          getNthItemFromList(list, 0).focus();
+          var handler = e => {
+            document.removeEventListener('keydown', handler);
+            assert.isFalse(e.defaultPrevented);
             done();
+          };
+          document.addEventListener('keydown', handler);
+          requestAnimationFrame(function() {
+            setTimeout(function() {
+              MockInteractions.pressAndReleaseKeyOn(list, 38);  // up
+            });
           });
         });
-      });
-    });
 
-    test('up arrow when first item has focus, defaultPrevented is false', function(done) {
-      list.items = buildDataSet(2);
-      flush(function() {
-        getNthItemFromList(list, 0).focus();
-        var handler = e => {
-          document.removeEventListener('keydown', handler);
-          assert.isFalse(e.defaultPrevented);
-          done();
-        };
-        document.addEventListener('keydown', handler);
-        requestAnimationFrame(function() {
-          setTimeout(function() {
-            MockInteractions.pressAndReleaseKeyOn(list, 38); // up
+    test(
+        'down arrow when last item has focus, defaultPrevented is false',
+        function(done) {
+          list.items = buildDataSet(2);
+          PolymerFlush();
+          getNthItemFromList(list, 1).focus();
+          var handler = e => {
+            document.removeEventListener('keydown', handler);
+            assert.isFalse(e.defaultPrevented);
+            done();
+          };
+          document.addEventListener('keydown', handler);
+          requestAnimationFrame(function() {
+            setTimeout(function() {
+              MockInteractions.pressAndReleaseKeyOn(list, 40);  // down
+            });
           });
         });
-      });
-    });
 
-    test('down arrow when last item has focus, defaultPrevented is false', function(done) {
-      list.items = buildDataSet(2);
-      flush(function() {
-        getNthItemFromList(list, 1).focus();
-        var handler = e => {
-          document.removeEventListener('keydown', handler);
-          assert.isFalse(e.defaultPrevented);
-          done();
-        };
-        document.addEventListener('keydown', handler);
-        requestAnimationFrame(function() {
-          setTimeout(function() {
-            MockInteractions.pressAndReleaseKeyOn(list, 40); // down
+    test(
+        'up arrow when second item has focus, defaultPrevented is true',
+        function(done) {
+          list.items = buildDataSet(2);
+          PolymerFlush();
+          getNthItemFromList(list, 1).focus();
+          var handler = e => {
+            document.removeEventListener('keydown', handler);
+            assert.isTrue(e.defaultPrevented);
+            done();
+          };
+          document.addEventListener('keydown', handler);
+          requestAnimationFrame(function() {
+            setTimeout(function() {
+              MockInteractions.pressAndReleaseKeyOn(list, 38);  // up
+            });
           });
         });
-      });
-    });
 
-    test('up arrow when second item has focus, defaultPrevented is true', function(done) {
-      list.items = buildDataSet(2);
-      flush(function() {
-        getNthItemFromList(list, 1).focus();
-        var handler = e => {
-          document.removeEventListener('keydown', handler);
-          assert.isTrue(e.defaultPrevented);
-          done();
-        };
-        document.addEventListener('keydown', handler);
-        requestAnimationFrame(function() {
-          setTimeout(function() {
-            MockInteractions.pressAndReleaseKeyOn(list, 38); // up
+    test(
+        'down arrow when second to last item has focus, defaultPrevented is true',
+        function(done) {
+          list.items = buildDataSet(2);
+          PolymerFlush();
+          getNthItemFromList(list, 0).focus();
+          var handler = e => {
+            document.removeEventListener('keydown', handler);
+            assert.isTrue(e.defaultPrevented);
+            done();
+          };
+          document.addEventListener('keydown', handler);
+          requestAnimationFrame(function() {
+            setTimeout(function() {
+              MockInteractions.pressAndReleaseKeyOn(list, 40);  // down
+            });
           });
         });
-      });
-    });
-
-    test('down arrow when second to last item has focus, defaultPrevented is true', function(done) {
-      list.items = buildDataSet(2);
-      flush(function() {
-        getNthItemFromList(list, 0).focus();
-        var handler = e => {
-          document.removeEventListener('keydown', handler);
-          assert.isTrue(e.defaultPrevented);
-          done();
-        };
-        document.addEventListener('keydown', handler);
-        requestAnimationFrame(function() {
-          setTimeout(function() {
-            MockInteractions.pressAndReleaseKeyOn(list, 40); // down
-          });
-        });
-      });
-    });
 
     test('first click recognized in long lists (#411)', function(done) {
       list.items = buildDataSet(100);
 
-      Polymer.dom.flush();
+      flush$0();
 
-      list.scroll(0, getFirstItemFromList(list).offsetHeight * list._physicalCount);
+      list.scroll(
+          0, getFirstItemFromList(list).offsetHeight * list._physicalCount);
 
       requestAnimationFrame(function() {
         setTimeout(function() {
@@ -282,19 +347,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var firstItem = getFirstItemFromList(list);
           MockInteractions.focus(firstItem.parentNode);
 
-          Polymer.dom.flush();
+          flush$0();
 
-          assert.equal(firstItem, getFirstItemFromList(list),
-            'Should be the same item after focusing it');
-          assert.isNull(lastOffscreenFocusedItem.parentNode,
-            'Should remove the last offscreen focused item');
+          assert.equal(
+              firstItem,
+              getFirstItemFromList(list),
+              'Should be the same item after focusing it');
+          assert.isNull(
+              lastOffscreenFocusedItem.parentNode,
+              'Should remove the last offscreen focused item');
           done();
         });
       });
     });
 
-  });
+<<<<<<< HEAD
+=======
+    test(
+        'focus is correctly restored after scrolling off screen (#537)',
+        function(done) {
+          list.items = buildDataSet(100);
 
+          PolymerFlush();
+          list.scroll(0, 5000);
+          requestAnimationFrame(function() {
+            setTimeout(function() {
+              var item = getFirstItemFromList(list);
+              assert.equal(item.tabIndex, -1);
+              MockInteractions.focus(item);
+              assert.equal(item.tabIndex, 0);
+              list.scroll(0, 0);
+              requestAnimationFrame(function() {
+                setTimeout(function() {
+                  MockInteractions.focus(item);
+                  assert.equal(list._focusedItem, item.parentElement);
+                  done();
+                });
+              });
+            });
+          });
+        });
+>>>>>>> a894e9b258fd0e0bf597ac5bf689d157b934b384
+  });
 </script>
 
 </body>
