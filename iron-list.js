@@ -376,8 +376,8 @@ Polymer({
 		'_itemsChanged(items.*)',
 		'_selectionEnabledChanged(selectionEnabled)',
 		'_multiSelectionChanged(multiSelection)',
-		'_setOverflow(scrollTarget, scrollOffset)'
-	],
+        '_setOverflow(scrollTarget, scrollOffset)'
+    ],
 
 	behaviors: [
 		Templatizer,
@@ -726,7 +726,11 @@ Polymer({
 
 	get _scrollOffset() {
 		return this._scrollerPaddingTop + this.scrollOffset;
-	},
+    },
+    
+    get _isFirefox() {
+        return navigator.userAgent.indexOf("Firefox") > -1;
+    },
 
 	ready: function () {
 		this.addEventListener('focus', this._didFocus.bind(this), true);
@@ -814,7 +818,7 @@ Polymer({
 				this._increasePoolIfNeeded.bind(this, 0),
 				microTask);
 		}
-	},
+    },
 
 	/**
 	 * Returns an object that contains the indexes of the physical items
@@ -1485,6 +1489,13 @@ Polymer({
 			this._firstVisibleIndexVal = null;
 			this._lastVisibleIndexVal = null;
 			if (this._isVisible) {
+                
+                // Note: When scroller element is getting set to display: ‘none’ and again getting set to display: ‘’ it looses scrollTop info.
+                // Because of this it's never getting reset to it's previous scroll position and component is getting blank.
+                if(this._isFirefox && this._scrollTop != this._scrollPosition) {
+                    this._scrollTop = this._scrollPosition;
+                }
+
 				this.updateViewportBoundaries();
 				// Reinstall the scroll event listener.
 				this.toggleScrollListener(true);
